@@ -1,0 +1,21 @@
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t kstokolos/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true kstokolos/react-test npm test
+
+after_success:
+    - docker build -t kstokolos/multi-client ./client
+    - docker build -t kstokolos/multi-nginx ./nginx
+    - docker build -t kstokolos/multi-server ./server
+    - docker build -t kstokolos/multi-worker ./worker
+
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - docker push kstokolos/multi-client
+    - docker push kstokolos/multi-nginx
+    - docker push kstokolos/multi-server
+    - docker push kstokolos/multi-worker
