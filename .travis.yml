@@ -14,7 +14,9 @@ after_success:
     - docker build -t kstokolos/multi-server ./server
     - docker build -t kstokolos/multi-worker ./worker
 
+    # Log in to the docker CLI
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    # Push images to docker hub 
     - docker push kstokolos/multi-client
     - docker push kstokolos/multi-nginx
     - docker push kstokolos/multi-server
